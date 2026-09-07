@@ -1,0 +1,25 @@
+package main
+
+import (
+	_ "github.com/joho/godotenv/autoload"
+	"github.com/thebigyovadiaz/gin-rest-api/core/database"
+
+	"log"
+)
+
+func main() {
+
+	// establish connection with db
+	db, err := database.NewClient()
+	if err != nil {
+		panic("Something wrong with DBClient")
+	}
+	err = db.DBMigrate()
+	if err != nil {
+		log.Fatal("Database Migration Failed!")
+		return
+	}
+
+	service := controllers.NewServer(db)
+	log.Fatal(service.Start())
+}
